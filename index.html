@@ -171,17 +171,19 @@ emailjs.init("7WLPtRZxX4lv1c-mV");
 
 document.getElementById("contact-form").addEventListener("submit", function(e) {
   e.preventDefault();
+  console.log("Küldés indul...");
 
   emailjs.sendForm(
-    "service_98h9j4k",
-    "template_4kjjsrg",
+    "service_ye4tjub",
+    "template_vhlvomf",
     this
-  ).then(() => {
+  ).then((response) => {
+    console.log("Siker", response);
     alert("✅ Sikeresen elküldve!");
     this.reset();
-  }, (error) => {
-    alert("❌ Hiba történt");
-    console.error(error);
+  }).catch((error) => {
+    console.error("Hiba részlete:", error);
+    alert("❌ Hiba történt - nézd a konzolt!");
   });
 });
 </script>
@@ -191,4 +193,5 @@ document.getElementById("contact-form").addEventListener("submit", function(e) {
 
 </body>
 </html>
+
 
