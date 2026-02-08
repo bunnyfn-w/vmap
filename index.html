@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vidéki Boys TGF</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --text: #ffffff;
+  --accent: #7aa2ff;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0a0f1f, #05070d);
+  color: var(--text);
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 600px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.header {
+  height: 180px;
+  background-image: url("frtv.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.form-content {
+  padding: 25px;
+}
+
+h1 {
+  font-weight: 400;
+  margin-bottom: 10px;
+}
+
+p {
+  opacity: 0.7;
+  margin-bottom: 25px;
+}
+
+label {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+input, textarea {
+  width: 100%;
+  margin-top: 6px;
+  margin-bottom: 20px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--glass-border);
+  background: rgba(255,255,255,0.05);
+  color: white;
+  outline: none;
+}
+
+input::placeholder, textarea::placeholder {
+  color: rgba(255,255,255,0.4);
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #7aa2ff, #5f7cff);
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* ==== JÁTÉKOS SZINT – EGY SOR ==== */
+.level-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.level-option {
+  flex: 1;
+  padding: 12px;
+  text-align: center;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--glass-border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.level-option input {
+  display: none;
+}
+
+.level-option:has(input:checked) {
+  background: rgba(122,162,255,0.25);
+  border-color: rgba(122,162,255,0.6);
+  font-weight: 500;
+}
+</style>
+</head>
+
+<body>
+
+<div class="form-container">
+  <div class="header"></div>
+
+  <div class="form-content">
+    <h1>Vidéki Boys TGF</h1>
+    <p>Kérlek töltsd ki az alábbi adatokat</p>
+
+<form id="contact-form">
+
+  <label>Teljes név</label>
+  <input type="text" name="name" required>
+
+  <label>Email cím</label>
+  <input type="email" name="email" required>
+
+  <label>Hány éves vagy?</label>
+  <input type="number" name="age" min="10" max="99" required>
+
+  <label>Miért akarsz csatlakozni a csapatba?</label>
+  <textarea name="motivation" rows="4" required></textarea>
+
+  <label>Játékos szinted</label>
+  <div class="level-row">
+    <label class="level-option">
+      <input type="radio" name="level" value="Kezdő" required>
+      Kezdő
+    </label>
+
+    <label class="level-option">
+      <input type="radio" name="level" value="Haladó">
+      Haladó
+    </label>
+
+    <label class="level-option">
+      <input type="radio" name="level" value="Profi">
+      Profi
+    </label>
+  </div>
+
+  <button type="submit">Jelentkezés elküldése</button>
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+(function(){
+  emailjs.init("7WLPtRZxX4lv1c-mV");
+})();
+
+document.getElementById("contact-form").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  emailjs.sendForm(
+    "service_ye4tjub",
+    "template_vhlvomf",
+    this
+  ).then(() => {
+    alert("✅ Sikeresen elküldve!");
+    this.reset();
+  }, (error) => {
+    alert("❌ Hiba történt");
+    console.error(error);
+  });
+});
+</script>
+
+  </div>
+</div>
+
+</body>
+</html>
