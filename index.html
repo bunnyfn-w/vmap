@@ -194,28 +194,45 @@ emailjs.init("7WLPtRZxX4lv1c-mV");
 
 document.getElementById("contact-form").addEventListener("submit", function(e) {
   e.preventDefault();
-  console.log("Küldés indul...");
+
+  const form = this;
+  const inputs = form.querySelectorAll("input, textarea");
+  let valid = true;
+
+  inputs.forEach(el => {
+    if (
+      (el.type !== "radio" && el.value.trim() === "") ||
+      (el.type === "radio" && !form.querySelector("input[name='level']:checked"))
+    ) {
+      valid = false;
+    }
+  });
+
+  if (!valid) {
+    alert("⚠️ Minden mezőt ki kell tölteni!");
+    return;
+  }
 
   emailjs.sendForm(
     "service_d0um9an",
     "template_vhlvomf",
-    this
-  ).then((response) => {
-    console.log("Siker", response);
+    form
+  ).then(() => {
     alert("✅ Sikeresen elküldve!");
-    this.reset();
-  }).catch((error) => {
-    console.error("Hiba részlete:", error);
-    alert("❌ Hiba történt - nézd a konzolt!");
+    form.reset();
+  }).catch(() => {
+    alert("❌ Hiba történt küldés közben!");
   });
 });
 </script>
+
 
   </div>
 </div>
 
 </body>
 </html>
+
 
 
 
