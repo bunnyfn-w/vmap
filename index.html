@@ -81,7 +81,7 @@ button {
   cursor: pointer;
 }
 
-/* ==== JÁTÉKOS SZINT – FIX & STABIL ==== */
+/* JÁTÉKOS SZINT */
 .level-row {
   display: flex;
   gap: 12px;
@@ -112,6 +112,36 @@ button {
   border-color: rgba(122,162,255,0.6);
   font-weight: 500;
 }
+
+/* ===== LOADING OVERLAY ===== */
+#loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 7, 13, 0.85);
+  backdrop-filter: blur(8px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loader {
+  text-align: center;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 5px solid rgba(255,255,255,0.2);
+  border-top: 5px solid #7aa2ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 15px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 </style>
 </head>
 
@@ -124,73 +154,63 @@ button {
     <h1>Vidéki Boys TGF</h1>
     <p>Kérlek töltsd ki az alábbi adatokat</p>
 
-<form id="contact-form">
+    <form id="contact-form">
 
-  <label>Teljes név</label>
-  <input type="text" name="name" required>
+      <label>Teljes név</label>
+      <input type="text" name="name">
 
-  <label>Call sign</label>
-  <input type="text" name="callsign" required>
+      <label>Call sign</label>
+      <input type="text" name="callsign">
 
-  <label>Mióta airsoftozol?</label>
-  <input type="text" name="airsoft_time" required>
+      <label>Mióta airsoftozol?</label>
+      <input type="text" name="airsoft_time">
 
-  <label>Hány játékon voltál?</label>
-  <input type="number" name="games" required>
+      <label>Hány játékon voltál?</label>
+      <input type="number" name="games">
 
-  <label>Email cím</label>
-  <input type="email" name="email" required>
+      <label>Email cím</label>
+      <input type="email" name="email">
 
-  <label>Hány éves vagy?</label>
-  <input type="number" name="age" min="10" max="99" required>
+      <label>Hány éves vagy?</label>
+      <input type="number" name="age" min="10" max="99">
 
-  <label>Miért akarsz csatlakozni a csapatba?</label>
-  <textarea name="motivation" rows="4" required></textarea>
+      <label>Miért akarsz csatlakozni a csapatba?</label>
+      <textarea name="motivation" rows="4"></textarea>
 
+      <label>Játékos szinted</label>
+      <div class="level-row">
+        <label class="level-option">
+          <input type="radio" name="level" value="Kezdő">
+          <span>Kezdő</span>
+        </label>
+        <label class="level-option">
+          <input type="radio" name="level" value="Haladó">
+          <span>Haladó</span>
+        </label>
+        <label class="level-option">
+          <input type="radio" name="level" value="Profi">
+          <span>Profi</span>
+        </label>
+      </div>
 
-
-  <label>Aktivitás</label>
-  <div class="level-row">
-    <label class="level-option">
-      <input type="radio" name="activy" value="Nem aktív" required>
-      <span>Nem vagyok aktív</span>
-    </label>
-
-    <label class="level-option">
-      <input type="radio" name="activy" value="Viszonylag aktív">
-      <span>Viszonylag aktív vagyok!</span>
-    </label>
-
-    <label class="level-option">
-      <input type="radio" name="activy" value="Teljesen aktív">
-      <span>Teljesen aktív vagyok!</span>
-    </label>
+      <button type="submit">Jelentkezés elküldése</button>
+    </form>
   </div>
+</div>
 
-  <label>Játékos szinted</label>
-  <div class="level-row">
-    <label class="level-option">
-      <input type="radio" name="level" value="Kezdő" required>
-      <span>Kezdő</span>
-    </label>
-
-    <label class="level-option">
-      <input type="radio" name="level" value="Haladó">
-      <span>Haladó</span>
-    </label>
-
-    <label class="level-option">
-      <input type="radio" name="level" value="Profi">
-      <span>Profi</span>
-    </label>
+<!-- LOADING -->
+<div id="loading-overlay">
+  <div class="loader">
+    <div class="spinner"></div>
+    <p>Küldés folyamatban...</p>
   </div>
-
-  <button type="submit">Jelentkezés elküldése</button>
-</form>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 <script>
 emailjs.init("7WLPtRZxX4lv1c-mV");
+
+const overlay = document.getElementById("loading-overlay");
 
 document.getElementById("contact-form").addEventListener("submit", function(e) {
   e.preventDefault();
@@ -200,41 +220,32 @@ document.getElementById("contact-form").addEventListener("submit", function(e) {
   let valid = true;
 
   inputs.forEach(el => {
-    if (
-      (el.type !== "radio" && el.value.trim() === "") ||
-      (el.type === "radio" && !form.querySelector("input[name='level']:checked"))
-    ) {
-      valid = false;
-    }
+    if (el.value.trim() === "") valid = false;
   });
+
+  if (!form.querySelector("input[name='level']:checked")) {
+    valid = false;
+  }
 
   if (!valid) {
     alert("⚠️ Minden mezőt ki kell tölteni!");
     return;
   }
 
-  emailjs.sendForm(
-    "service_d0um9an",
-    "template_vhlvomf",
-    form
-  ).then(() => {
-    alert("✅ Sikeresen elküldve!");
-    form.reset();
-  }).catch(() => {
-    alert("❌ Hiba történt küldés közben!");
-  });
+  overlay.style.display = "flex";
+
+  emailjs.sendForm("service_d0um9an", "template_vhlvomf", form)
+    .then(() => {
+      overlay.style.display = "none";
+      alert("✅ Sikeresen elküldve!");
+      form.reset();
+    })
+    .catch(() => {
+      overlay.style.display = "none";
+      alert("❌ Hiba történt küldés közben!");
+    });
 });
 </script>
 
-
-  </div>
-</div>
-
 </body>
 </html>
-
-
-
-
-
-
